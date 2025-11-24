@@ -6,10 +6,6 @@ In this project, our objective is to predict whether the patient has diabetes or
 
 
 
-# **Screenshot**
-
-![](screenshot.jpg)
-
 # Installation
 
 - Clone this repository and unzip it.
