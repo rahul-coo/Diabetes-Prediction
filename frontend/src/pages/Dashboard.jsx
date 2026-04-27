@@ -22,10 +22,6 @@ export default function Dashboard() {
 <Link className="text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors" to="/">About</Link>
 </div>
 </div>
-<div className="flex items-center gap-4">
-<Link className="px-4 py-2 text-blue-600 font-medium hover:bg-blue-50/50 rounded-lg transition-all duration-300 active:scale-95" to="/login">Login</Link>
-<Link className="px-5 py-2 bg-primary text-white font-semibold rounded-xl hover:opacity-90 shadow-md active:scale-95 transition-all" to="/signup">Sign Up</Link>
-</div>
 </div>
 </nav>
 <main className="max-w-7xl mx-auto px-6 py-8">

@@ -16,10 +16,6 @@ export default function LandingPage() {
 <Link className="text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors" to="/">About</Link>
 </div>
 </div>
-<div className="flex items-center gap-4">
-<Link className="px-4 py-2 text-slate-600 dark:text-slate-400 font-medium hover:bg-blue-50/50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300 active:scale-95" to="/login">Login</Link>
-<Link className="px-6 py-2 bg-primary text-on-primary font-semibold rounded-full hover:shadow-lg transition-all duration-300 active:scale-95" to="/signup">Sign Up</Link>
-</div>
 </div>
 </nav>
 <main>
