@@ -5,8 +5,8 @@ export default function HistoryChart({ history }) {
 
   const data = history.map((h, i) => ({
     index: i + 1,
-    glucose: h.inputs.Glucose,
-    bmi: h.inputs.BMI,
+    glucose: h.Glucose,
+    bmi: h.BMI,
     result: h.result,
   }))
 
