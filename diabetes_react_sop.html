@@ -1,0 +1,413 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .sop { padding: 1rem 0; }
+  .sop-header { margin-bottom: 1.5rem; }
+  .sop-header h1 { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+  .sop-header p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .tab { padding: 6px 14px; font-size: 13px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; cursor: pointer; color: var(--color-text-secondary); }
+  .tab.active { background: var(--color-background-secondary); color: var(--color-text-primary); border-color: var(--color-border-primary); }
+  .section { display: none; }
+  .section.visible { display: block; }
+  .step { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px; background: var(--color-background-primary); }
+  .step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--color-background-secondary); font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); flex-shrink: 0; }
+  .step-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); margin-left: auto; }
+  .badge-info { background: var(--color-background-info); color: var(--color-text-info); }
+  .badge-warn { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .badge-ok { background: var(--color-background-success); color: var(--color-text-success); }
+  .badge-err { background: var(--color-background-danger); color: var(--color-text-danger); }
+  .step-body { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+  .step-body ul { padding-left: 16px; margin-top: 6px; }
+  .step-body li { margin-bottom: 3px; }
+  pre { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 12px; font-size: 12px; font-family: var(--font-mono); overflow-x: auto; margin-top: 8px; color: var(--color-text-primary); line-height: 1.5; }
+  .issue { border-left: 2px solid; padding: 8px 12px; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; margin-top: 8px; font-size: 12px; line-height: 1.5; }
+  .issue-warn { border-color: #BA7517; background: var(--color-background-warning); color: var(--color-text-warning); }
+  .issue-fix { border-color: #0F6E56; background: var(--color-background-success); color: var(--color-text-success); }
+  .issue-err { border-color: #A32D2D; background: var(--color-background-danger); color: var(--color-text-danger); }
+  .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 1rem 0; }
+  .metric-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 10px; }
+  .metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px; }
+  .metric-label { font-size: 11px; color: var(--color-text-secondary); }
+  .metric-val { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+</style>
+
+<div class="sop">
+  <div class="sop-header">
+    <h1>Diabetes prediction system — React SOP</h1>
+    <p>Step-by-step frontend integration guide with fixes and recommendations</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="show('setup')">1. Setup</button>
+    <button class="tab" onclick="show('structure')">2. Structure</button>
+    <button class="tab" onclick="show('components')">3. Components</button>
+    <button class="tab" onclick="show('api')">4. API Layer</button>
+    <button class="tab" onclick="show('state')">5. State</button>
+    <button class="tab" onclick="show('advanced')">6. Advanced</button>
+    <button class="tab" onclick="show('issues')">7. Issues found</button>
+  </div>
+
+  <!-- SETUP -->
+  <div class="section visible" id="setup">
+    <div class="step">
+      <div class="step-header"><div class="step-num">1</div><div class="step-title">Scaffold the project</div><span class="badge badge-ok">Required</span></div>
+      <div class="step-body">
+        Use Vite (recommended over CRA — faster, modern):
+        <pre>npm create vite@latest diabetes-frontend -- --template react
+cd diabetes-frontend
+npm install</pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-header"><div class="step-num">2</div><div class="step-title">Install dependencies</div><span class="badge badge-ok">Required</span></div>
+      <div class="step-body">
+        <pre>npm install axios react-router-dom recharts react-hook-form
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p</pre>
+        <ul>
+          <li><strong>axios</strong> — HTTP calls to FastAPI</li>
+          <li><strong>react-router-dom</strong> — page routing</li>
+          <li><strong>recharts</strong> — charts for EDA/history</li>
+          <li><strong>react-hook-form</strong> — form validation (replaces manual state)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-header"><div class="step-num">3</div><div class="step-title">Configure CORS on FastAPI</div><span class="badge badge-err">Critical fix</span></div>
+      <div class="step-body">
+        Your SOP omits CORS setup — React on localhost:5173 calling FastAPI on :8000 will be blocked.
+        <pre>from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)</pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-header"><div class="step-num">4</div><div class="step-title">Environment variables</div><span class="badge badge-info">Best practice</span></div>
+      <div class="step-body">
+        <pre># .env.local
+VITE_API_URL=http://localhost:8000</pre>
+        Use in code: <code>import.meta.env.VITE_API_URL</code> — never hardcode the backend URL.
+      </div>
+    </div>
+  </div>
+
+  <!-- STRUCTURE -->
+  <div class="section" id="structure">
+    <div class="step">
+      <div class="step-header"><div class="step-num">5</div><div class="step-title">Folder structure</div><span class="badge badge-ok">Follow this</span></div>
+      <div class="step-body">
+        <pre>frontend/
+├── src/
+│   ├── api/
+│   │   └── predictApi.js       ← axios calls
+│   ├── components/
+│   │   ├── PredictionForm.jsx
+│   │   ├── ResultCard.jsx
+│   │   ├── HistoryTable.jsx
+│   │   └── LoadingSpinner.jsx
+│   ├── pages/
+│   │   ├── Dashboard.jsx
+│   │   └── History.jsx
+│   ├── hooks/
+│   │   └── usePrediction.js    ← custom hook
+│   ├── context/
+│   │   └── ThemeContext.jsx    ← dark mode
+│   ├── App.jsx
+│   └── main.jsx
+├── .env.local
+└── vite.config.js</pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-header"><div class="step-num">6</div><div class="step-title">Routing setup</div><span class="badge badge-info">Add this</span></div>
+      <div class="step-body">
+        <pre>// App.jsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Dashboard from './pages/Dashboard'
+import History from './pages/History'
+
+export default function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Dashboard /&gt;} /&gt;
+        &lt;Route path="/history" element={&lt;History /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  )
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPONENTS -->
+  <div class="section" id="components">
+    <div class="step">
+      <div class="step-header"><div class="step-num">7</div><div class="step-title">PredictionForm component</div><span class="badge badge-ok">Core</span></div>
+      <div class="step-body">
+        Uses react-hook-form for validation — avoids messy useState per field:
+        <pre>import { useForm } from 'react-hook-form'
+
+const fields = [
+  { name: 'Pregnancies', min: 0, max: 20 },
+  { name: 'Glucose', min: 0, max: 300 },
+  { name: 'BloodPressure', min: 0, max: 200 },
+  { name: 'SkinThickness', min: 0, max: 100 },
+  { name: 'Insulin', min: 0, max: 900 },
+  { name: 'BMI', min: 0, max: 70, step: 0.1 },
+  { name: 'DiabetesPedigreeFunction', min: 0, max: 2.5, step: 0.01 },
+  { name: 'Age', min: 1, max: 120 },
+]
+
+export default function PredictionForm({ onSubmit }) {
+  const { register, handleSubmit, formState: { errors } } = useForm()
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      {fields.map(f =&gt; (
+        &lt;div key={f.name}&gt;
+          &lt;label&gt;{f.name}&lt;/label&gt;
+          &lt;input type="number" step={f.step || 1}
+            {...register(f.name, { required: true, min: f.min, max: f.max })} /&gt;
+          {errors[f.name] &amp;&amp; &lt;span&gt;Invalid value&lt;/span&gt;}
+        &lt;/div&gt;
+      ))}
+      &lt;button type="submit"&gt;Predict&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-header"><div class="step-num">8</div><div class="step-title">ResultCard component</div><span class="badge badge-ok">Core</span></div>
+      <div class="step-body">
+        <pre>export default function ResultCard({ result, probability }) {
+  const isDiabetic = result === 1
+  return (
+    &lt;div style={{ background: isDiabetic ? '#fee2e2' : '#dcfce7',
+                  border: `2px solid ${isDiabetic ? '#dc2626' : '#16a34a'}`,
+                  borderRadius: 12, padding: '1.5rem', textAlign: 'center' }}&gt;
+      &lt;h2 style={{ color: isDiabetic ? '#991b1b' : '#15803d' }}&gt;
+        {isDiabetic ? 'Diabetes Detected' : 'No Diabetes Detected'}
+      &lt;/h2&gt;
+      &lt;p&gt;Confidence: {(probability * 100).toFixed(1)}%&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}</pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-header"><div class="step-num">9</div><div class="step-title">LoadingSpinner</div><span class="badge badge-info">UX</span></div>
+      <div class="step-body">
+        <pre>export default function LoadingSpinner() {
+  return (
+    &lt;div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}&gt;
+      &lt;div style={{ width: 32, height: 32, border: '3px solid #e5e7eb',
+        borderTop: '3px solid #3b82f6', borderRadius: '50%',
+        animation: 'spin 0.8s linear infinite' }} /&gt;
+    &lt;/div&gt;
+  )
+}</pre>
+        Add in your global CSS: <code>@keyframes spin &#123; to &#123; transform: rotate(360deg) &#125; &#125;</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- API LAYER -->
+  <div class="section" id="api">
+    <div class="step">
+      <div class="step-header"><div class="step-num">10</div><div class="step-title">Axios API module</div><span class="badge badge-ok">Required</span></div>
+      <div class="step-body">
+        Your SOP shows a one-liner — this is the proper production version:
+        <pre>// src/api/predictApi.js
+import axios from 'axios'
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: 10000,
+})
+
+export const predict = async (formData) => {
+  const res = await api.post('/predict', formData)
+  return res.data  // { result: 0|1, probability: 0.87 }
+}
+
+export const healthCheck = async () => {
+  const res = await api.get('/health')
+  return res.data
+}</pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-header"><div class="step-num">11</div><div class="step-title">FastAPI response shape</div><span class="badge badge-warn">Align this</span></div>
+      <div class="step-body">
+        Your SOP backend returns <code>{"result": model.predict([data])}</code> — extend it to include probability for the UI confidence display:
+        <pre>@app.post("/predict")
+def predict(data: PatientData):
+    features = [[data.Pregnancies, data.Glucose, ...]]
+    result = int(model.predict(features)[0])
+    prob = float(model.predict_proba(features)[0][result])
+    return {"result": result, "probability": prob}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE -->
+  <div class="section" id="state">
+    <div class="step">
+      <div class="step-header"><div class="step-num">12</div><div class="step-title">Custom hook — usePrediction</div><span class="badge badge-info">Clean pattern</span></div>
+      <div class="step-body">
+        Keeps Dashboard.jsx clean — all async logic in one hook:
+        <pre>// src/hooks/usePrediction.js
+import { useState } from 'react'
+import { predict } from '../api/predictApi'
+
+export function usePrediction() {
+  const [result, setResult] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [history, setHistory] = useState([])
+
+  const submit = async (formData) => {
+    setLoading(true); setError(null)
+    try {
+      const data = await predict(formData)
+      setResult(data)
+      setHistory(prev => [...prev, { ...formData, ...data, time: new Date() }])
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Prediction failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+  return { result, loading, error, history, submit }
+}</pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-header"><div class="step-num">13</div><div class="step-title">Dark mode context</div><span class="badge badge-info">Advanced</span></div>
+      <div class="step-body">
+        <pre>// src/context/ThemeContext.jsx
+import { createContext, useContext, useState } from 'react'
+const ThemeCtx = createContext()
+
+export function ThemeProvider({ children }) {
+  const [dark, setDark] = useState(false)
+  return (
+    &lt;ThemeCtx.Provider value={{ dark, toggle: () => setDark(p => !p) }}&gt;
+      &lt;div className={dark ? 'dark' : ''}&gt;{children}&lt;/div&gt;
+    &lt;/ThemeCtx.Provider&gt;
+  )
+}
+export const useTheme = () => useContext(ThemeCtx)</pre>
+        In Tailwind config add: <code>darkMode: 'class'</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADVANCED -->
+  <div class="section" id="advanced">
+    <div class="step">
+      <div class="step-header"><div class="step-num">14</div><div class="step-title">Recharts — prediction history graph</div><span class="badge badge-info">Advanced</span></div>
+      <div class="step-body">
+        <pre>import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts'
+
+export default function HistoryChart({ history }) {
+  const data = history.map((h, i) => ({
+    index: i + 1,
+    glucose: h.Glucose,
+    bmi: h.BMI,
+    result: h.result,
+  }))
+  return (
+    &lt;LineChart width={600} height={250} data={data}&gt;
+      &lt;CartesianGrid strokeDasharray="3 3" /&gt;
+      &lt;XAxis dataKey="index" label="Prediction #" /&gt;
+      &lt;YAxis /&gt;
+      &lt;Tooltip /&gt;
+      &lt;Line type="monotone" dataKey="glucose" stroke="#3b82f6" /&gt;
+      &lt;Line type="monotone" dataKey="bmi" stroke="#10b981" /&gt;
+    &lt;/LineChart&gt;
+  )
+}</pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-header"><div class="step-num">15</div><div class="step-title">localStorage — persist history</div><span class="badge badge-info">Advanced</span></div>
+      <div class="step-body">
+        <pre>// In usePrediction.js — initialize from storage
+const [history, setHistory] = useState(() => {
+  const saved = localStorage.getItem('predictionHistory')
+  return saved ? JSON.parse(saved) : []
+})
+
+// Save on every update
+useEffect(() => {
+  localStorage.setItem('predictionHistory', JSON.stringify(history))
+}, [history])</pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-header"><div class="step-num">16</div><div class="step-title">Vite proxy — avoid CORS in dev</div><span class="badge badge-warn">Alternative</span></div>
+      <div class="step-body">
+        Instead of CORS middleware, configure Vite to proxy:
+        <pre>// vite.config.js
+export default {
+  server: {
+    proxy: {
+      '/predict': 'http://localhost:8000',
+      '/health': 'http://localhost:8000',
+    }
+  }
+}</pre>
+        Then use <code>axios.post('/predict', data)</code> with no base URL needed in dev.
+      </div>
+    </div>
+  </div>
+
+  <!-- ISSUES -->
+  <div class="section" id="issues">
+    <div class="step">
+      <div class="step-header"><div class="step-num">!</div><div class="step-title">Issues found in your SOP + fixes</div><span class="badge badge-err">Review all</span></div>
+      <div class="step-body">
+        <div class="issue issue-err">
+          <strong>Missing CORS config</strong> — React on port 5173 calling FastAPI on 8000 will fail with a CORS error. Add CORSMiddleware to your FastAPI app (see Step 3).
+        </div>
+        <div class="issue issue-warn" style="margin-top:8px">
+          <strong>Backend predict returns array</strong> — <code>model.predict([data])</code> returns a numpy array, not a scalar. Use <code>int(model.predict([data])[0])</code>. Also return <code>predict_proba</code> for confidence scores.
+        </div>
+        <div class="issue issue-warn" style="margin-top:8px">
+          <strong>No input schema on FastAPI</strong> — the SOP shows <code>def predict(data)</code> with no type. Use a Pydantic model so FastAPI validates input automatically.
+        </div>
+        <div class="issue issue-warn" style="margin-top:8px">
+          <strong>Zero values in Pima dataset</strong> — Glucose, BloodPressure, SkinThickness, Insulin, BMI cannot physiologically be zero. Your SOP mentions this but doesn't enforce it on the frontend. Add <code>min</code> validation in react-hook-form (e.g. Glucose min=1).
+        </div>
+        <div class="issue issue-warn" style="margin-top:8px">
+          <strong>No scaler saved</strong> — if you normalize features before training, you must save the scaler too: <code>joblib.dump(scaler, 'scaler.pkl')</code> and apply it in the API before prediction.
+        </div>
+        <div class="issue issue-fix" style="margin-top:8px">
+          <strong>Suggestion: Add a /health endpoint</strong> — lets the frontend show a "backend offline" warning gracefully if FastAPI is down.
+        </div>
+        <div class="issue issue-fix" style="margin-top:8px">
+          <strong>Suggestion: Use Pydantic for input</strong> — <code>class PatientData(BaseModel): Pregnancies: int; Glucose: float ...</code> gives automatic validation and docs at /docs.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'))
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+    document.getElementById(id).classList.add('visible')
+    event.target.classList.add('active')
+  }
+</script>
